@@ -1,53 +1,41 @@
-# Embla Scrollbar Demo
+# Embla Scrollbar Plugin Demo
 
-This repo contains a small vanilla JavaScript helper that adds a custom scrollbar to an Embla Carousel instance.
+This repo contains a small vanilla JavaScript plugin that adds a custom scrollbar to an Embla Carousel instance.
 
-Embla does not ship with a built-in scrollbar UI, so this project keeps the scrollbar logic separate and syncs a custom thumb with Embla's scroll progress.
+## Why A Plugin
 
-## What It Does
+Refactoring this into a plugin makes more sense than creating Embla inside the scrollbar helper. Embla already accepts plugins as the third constructor argument, so the carousel can keep owning its own options, lifecycle, and other plugins while the scrollbar only owns scrollbar behavior.
 
-- Creates an Embla carousel from a root element
-- Measures the visible viewport against the scrollable content
-- Sizes a thumb to match the visible portion of the carousel
-- Keeps the thumb in sync while the carousel scrolls
-- Lets you drag, click, or keyboard-control the thumb
+That keeps the API composable:
+
+- The app creates Embla once.
+- The scrollbar receives the initialized Embla API through `init`.
+- Cleanup happens through the plugin `destroy` hook.
+- Other Embla plugins can be used beside it.
 
 ## Files
 
-- `index.html` - Demo markup, styles, and Embla bootstrapping
-- `EmblaScrollbar.js` - The scrollbar helper class
+- `index.html` - Standalone demo with basic styles and controls
+- `EmblaScrollbar.js` - The scrollbar plugin factory
 
-## How To Use
-
-1. Include Embla Carousel from a CDN or local build.
-2. Load `EmblaScrollbar.js`.
-3. Pass the carousel root, scrollbar track, and thumb elements into `new EmblaScrollbar(...)`.
-
-Example:
+## Usage
 
 ```html
-<script src="https://unpkg.com/embla-carousel/embla-carousel.umd.js"></script>
+<script src="https://unpkg.com/embla-carousel@8/embla-carousel.umd.js"></script>
 <script src="EmblaScrollbar.js"></script>
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const emblaNode = document.querySelector('.embla');
-    const scrollbarContainer = document.querySelector('.scrollbar-container');
-    const scrollbarThumb = document.querySelector('.scrollbar-thumb');
-
-    if (emblaNode && scrollbarContainer && scrollbarThumb) {
-      new EmblaScrollbar(emblaNode, scrollbarContainer, scrollbarThumb);
-    }
+  const emblaNode = document.querySelector('.embla');
+  const scrollbar = EmblaScrollbar({
+    trackNode: document.querySelector('.scrollbar'),
+    thumbNode: document.querySelector('.scrollbar__thumb'),
   });
+
+  const emblaApi = EmblaCarousel(emblaNode, { loop: false }, [scrollbar]);
 </script>
 ```
 
-## Notes
-
-- The demo uses the `.embla` element as the Embla viewport.
-- The thumb is treated like a horizontal slider for accessibility.
-- The helper assumes the scrollbar track is visible and has a measurable width when initialized.
+`trackNode` and `thumbNode` can be DOM elements or selectors.
 
 ## Run It
 
 Open `index.html` in a browser, or serve the folder with any static file server.
-
