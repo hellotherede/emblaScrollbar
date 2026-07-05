@@ -24,15 +24,20 @@
 			});
 		</script>
 		<style>
+			* {
+				box-sizing: border-box;
+			}
 			body {
 				font-family: Arial, sans-serif;
 				display: flex;
 				flex-direction: column;
 				align-items: center;
 				justify-content: center;
-				height: 100vh;
+				min-height: 100vh;
+				padding: 24px;
 				margin: 0;
 				user-select: none;
+				background: #f6f6f6;
 			}
 			.embla {
 				overflow: hidden;
@@ -71,8 +76,11 @@
 				border-radius: 6px;
 				cursor: grab;
 				top: 0;
+				left: 0;
 				transition: width 0.2s ease-in-out;
 				outline: none;
+				touch-action: none;
+				will-change: transform, width;
 			}
 			.scrollbar-thumb:focus {
 				outline: 2px solid #000;
@@ -131,8 +139,9 @@
 		>
 			<div
 				class="scrollbar-thumb"
-				role="button"
+				role="slider"
 				aria-label="Carousel Scrollbar"
+				aria-orientation="horizontal"
 				tabindex="0"
 				aria-valuemin="0"
 				aria-valuemax="100"
